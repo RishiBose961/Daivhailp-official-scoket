@@ -27,12 +27,9 @@ const getUser = (userId) => {
   return users.find((user) => user.userId === userId);
 };
 
-
-
 io.on("connection", (socket) => {
   //when connect
   console.log("a user connected");
-
   // io.to(si).emit('welcome',"hello world is socket server")
   //take userid and socketId from user
   socket.on("addUser", (userId) => {
@@ -41,14 +38,30 @@ io.on("connection", (socket) => {
   });
 
   //send and get message
-  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-    const user = getUser(receiverId);
-    io.to(user?.socketId).emit("getMessage", {
+  socket.on(
+    "sendMessage",
+    ({
       senderId,
+      receiverId,
       text,
-    });
-  })
- 
+      uploadImgDoc,
+      meetinglink,
+      meetingissue,
+      meetingdate,
+      meetingtime,
+    }) => {
+      const user = getUser(receiverId);
+      io.to(user?.socketId).emit("getMessage", {
+        senderId,
+        text,
+        uploadImgDoc,
+        meetinglink,
+        meetingissue,
+        meetingdate,
+        meetingtime,
+      });
+    }
+  );
 
   //when disconnect
   socket.on("disconnect", () => {
@@ -61,5 +74,5 @@ io.on("connection", (socket) => {
 const port = process.env.PORT || 8000;
 
 server.listen(port, () => {
-  console.log("Server listening 8000");
+  console.log("Server listening 5000");
 });
